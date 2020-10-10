@@ -13,7 +13,7 @@ def encrypt_vigenere(plaintext: str, keyword: str) -> str:
 
     keyword = keyword.lower
 
-    for l, ch in enumerate(plaintext):
+    for l, ch in range(len(plaintext)):
         ch = ord(plaintext[l])
         key = ord(keyword[l % len(keyword)])
         if ch in range(65, 91):
@@ -40,7 +40,7 @@ def decrypt_vigenere(ciphertext: str, keyword: str) -> str:
 
     keyword = keyword.lower
 
-    for l, ch in enumerate(ciphertext):
+    for l, ch in range(len(chiphertext)):
         ch = ord(ciphertext[l])
         key = ord(keyword[l % len(keyword)])
         if ch in range(65, 91):
