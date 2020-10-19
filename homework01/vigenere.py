@@ -1,3 +1,6 @@
+import string
+
+
 def encrypt_vigenere(plaintext: str, keyword: str) -> str:
     """
     Encrypts plaintext using a Vigenere cipher.
@@ -11,17 +14,26 @@ def encrypt_vigenere(plaintext: str, keyword: str) -> str:
     """
     ciphertext = ""
 
-    keyword = keyword.lower
+    alphabet_len = len(string.ascii_lowercase)
 
-    for l in enumerate(plaintext):
-        ch = ord(plaintext[l])
-        key = ord(keyword[l % len(keyword)])
-        if ch in range(65, 91):
-            ciphertext += chr(((ch - 65) + (key - 97)) % 26 + 65)
-        elif ch in range(97, 123):
-            ciphertext += chr(((ch - 97) + (key - 97)) % 26 + 97)
+    for i in range(len(plaintext)):
+        k = i % (len(keyword))
+        shift = 0
+        if keyword[k] in string.ascii_uppercase:
+            shift = ord(keyword[k]) - ord("A")
         else:
-            ciphertext += chr(ch)
+            shift = ord(keyword[k]) - ord("a")
+        ch = plaintext[i]
+        if ch in string.ascii_letters:
+            if (ch in string.ascii_lowercase) and (ord(ch) + shift > ord("z")):
+                ciphertext += chr(ord(ch) - alphabet_len + shift)
+            elif (ch in string.ascii_uppercase) and (ord(ch) + shift > ord("Z")):
+                ciphertext += chr(ord(ch) - alphabet_len + shift)
+            else:
+                ciphertext += chr(ord(ch) + shift)
+        else:
+            ciphertext += ch
+
     return ciphertext
 
 
@@ -38,15 +50,25 @@ def decrypt_vigenere(ciphertext: str, keyword: str) -> str:
     """
     plaintext = ""
 
-    keyword = keyword.lower
+    alphabet_len = len(string.ascii_lowercase)
 
-    for l in enumerate(ciphertext):
-        ch = ord(ciphertext[l])
-        key = ord(keyword[l % len(keyword)])
-        if ch in range(65, 91):
-            plaintext += chr(((ch - 65) - (key - 97)) % 26 + 65)
-        elif ch in range(97, 123):
-            plaintext += chr(((ch - 97) - (key - 97)) % 26 + 97)
+    for i in range(len(ciphertext)):
+        k = i % (len(keyword))
+
+        shift = 0
+        if keyword[k] in string.ascii_uppercase:
+            shift = ord(keyword[k]) - ord("A")
         else:
-            plaintext += chr(ch)
+            shift = ord(keyword[k]) - ord("a")
+        ch = ciphertext[i]
+        if ch in string.ascii_letters:
+            if (ch in string.ascii_lowercase) and (ord(ch) - shift < ord("a")):
+                plaintext += chr(ord(ch) + alphabet_len - shift)
+            elif (ch in string.ascii_uppercase) and (ord(ch) - shift < ord("A")):
+                plaintext += chr(ord(ch) + alphabet_len - shift)
+            else:
+                plaintext += chr(ord(ch) - shift)
+        else:
+            plaintext += ch
+
     return plaintext
