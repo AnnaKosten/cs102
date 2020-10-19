@@ -14,7 +14,7 @@ def is_prime(n: int) -> bool:
     >>> is_prime(8)
     False
     """
-    if (math.factorial(n - 1) + 1) % n != 0 and (n == 1):
+    if (math.factorial(n - 1) + 1) % n != 0 or n == 1:
         return False
     else:
         return True
