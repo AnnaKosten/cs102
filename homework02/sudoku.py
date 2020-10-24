@@ -44,8 +44,8 @@ def get_row(grid: List[List[str]], pos: Tuple[int, int]) -> List[str]:
     >>> get_row([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (2, 0))
     ['.', '8', '9']
     """
-  
-    pass
+    row = grid[pos[0]]
+    return row
 
 
 def get_col(grid: List[List[str]], pos: Tuple[int, int]) -> List[str]:
@@ -58,7 +58,8 @@ def get_col(grid: List[List[str]], pos: Tuple[int, int]) -> List[str]:
     >>> get_col([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (0, 2))
     ['3', '6', '9']
     """
-    pass
+    col = [grid[i][pos[1]] for i in range (len(grid))]
+    return col
 
 
 def get_block(grid: List[List[str]], pos: Tuple[int, int]) -> List[str]:
@@ -72,7 +73,15 @@ def get_block(grid: List[List[str]], pos: Tuple[int, int]) -> List[str]:
     >>> get_block(grid, (8, 8))
     ['2', '8', '.', '.', '.', '5', '.', '7', '9']
     """
-    pass
+    row = pos[0] % 3
+    col = pos[1] % 3
+    block = []
+    spos = pos[0]-row, pos[1]-col
+    for i in range(3):
+        for j in range(3):
+            block.append(grid[spos[0]+i][spos[1]+j])
+    return block
+    
 
 
 def find_empty_positions(grid: List[List[str]]) -> Optional[Tuple[int, int]]:
@@ -85,7 +94,14 @@ def find_empty_positions(grid: List[List[str]]) -> Optional[Tuple[int, int]]:
     >>> find_empty_positions([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']])
     (2, 0)
     """
-    pass
+    for i in range (len(grid)):
+        if '.' in grid[i]:
+            a = i
+    for i in range (len(grid[a])):
+        if grid[a][i] == '.':
+            return (a, i)
+    return None
+
 
 
 def find_possible_values(grid: List[List[str]], pos: Tuple[int, int]) -> Set[str]:
@@ -99,7 +115,12 @@ def find_possible_values(grid: List[List[str]], pos: Tuple[int, int]) -> Set[str
     >>> values == {'2', '5', '9'}
     True
     """
-    pass
+    b_values = {'1', '2', '3', '4', '5', '6', '7', '8', '9'}
+    values = set()
+    for i in b_values:
+        if i not in get_row(grid, pos) and i not in get_block(grid, pos) and i not in get_col(grid, pos):
+            values.add(i)
+    return values
 
 
 def solve(grid: List[List[str]]) -> Optional[List[List[str]]]:
