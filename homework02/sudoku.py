@@ -154,6 +154,7 @@ def solve(grid: List[List[str]]) -> Optional[List[List[str]]]:
 
     return None
 
+
 def check_solution(solution: List[List[str]]) -> bool:
     """ Если решение solution верно, то вернуть True, в противном случае False """
 
@@ -170,6 +171,7 @@ def check_solution(solution: List[List[str]]) -> bool:
         if crossing != b_values:
             return False
     return True
+
 
 def generate_sudoku(N: int) -> List[List[str]]:
     """Генерация судоку заполненного на N элементов
@@ -203,6 +205,7 @@ def generate_sudoku(N: int) -> List[List[str]]:
             grid[row][col] = "."
             count -= 1
     return grid
+
 
 if __name__ == "__main__":
     for fname in ["puzzle1.txt", "puzzle2.txt", "puzzle3.txt"]:
