@@ -1,4 +1,5 @@
 from typing import Tuple, List, Set, Optional
+import random
 
 
 def read_sudoku(filename: str) -> List[List[str]]:
@@ -34,9 +35,7 @@ def group(values: List[str], n: int) -> List[List[str]]:
     [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
     """
 
-    matrix = [values[i : i + n] for i in range(0, len(values), n)]
-
-    return matrix
+    return [values[i : i + n] for i in range(0, len(values), n)]
 
 
 def get_row(grid: List[List[str]], pos: Tuple[int, int]) -> List[str]:
@@ -49,8 +48,7 @@ def get_row(grid: List[List[str]], pos: Tuple[int, int]) -> List[str]:
     >>> get_row([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (2, 0))
     ['.', '8', '9']
     """
-    row = grid[pos[0]]
-    return row
+    return grid[pos[0]]
 
 
 def get_col(grid: List[List[str]], pos: Tuple[int, int]) -> List[str]:
@@ -63,8 +61,7 @@ def get_col(grid: List[List[str]], pos: Tuple[int, int]) -> List[str]:
     >>> get_col([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (0, 2))
     ['3', '6', '9']
     """
-    col = [grid[i][pos[1]] for i in range(len(grid))]
-    return col
+    return [grid[i][pos[1]] for i in range(len(grid))]
 
 
 def get_block(grid: List[List[str]], pos: Tuple[int, int]) -> List[str]:
@@ -98,12 +95,11 @@ def find_empty_positions(grid: List[List[str]]) -> Optional[Tuple[int, int]]:
     >>> find_empty_positions([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']])
     (2, 0)
     """
-    for i in range(len(grid)):
-        if "." in grid[i]:
-            a = i
-    for i in range(len(grid[a])):
-        if grid[a][i] == ".":
-            return (a, i)
+    for i, row in enumerate(grid):
+        try:
+            return i, row.index(".")
+        except ValueError:
+            continue
     return None
 
 
@@ -143,25 +139,37 @@ def solve(grid: List[List[str]]) -> Optional[List[List[str]]]:
     >>> solve(grid)
     [['5', '3', '4', '6', '7', '8', '9', '1', '2'], ['6', '7', '2', '1', '9', '5', '3', '4', '8'], ['1', '9', '8', '3', '4', '2', '5', '6', '7'], ['8', '5', '9', '7', '6', '1', '4', '2', '3'], ['4', '2', '6', '8', '5', '3', '7', '9', '1'], ['7', '1', '3', '9', '2', '4', '8', '5', '6'], ['9', '6', '1', '5', '3', '7', '2', '8', '4'], ['2', '8', '7', '4', '1', '9', '6', '3', '5'], ['3', '4', '5', '2', '8', '6', '1', '7', '9']]
     """
-    empty_pos = find_empty_positions(grid)
-    if not empty_pos:
+    pos = find_empty_positions(grid)
+    if not pos:
         return grid
-    else:
-        pos_values = find_possible_values(grid, empty_pos)
-        if pos_values:
-            for i in pos_values:
-                grid[empty_pos[0]][empty_pos[1]] = i
-                if solve(grid):
-                    return solve(grid)
-        grid[empty_pos[0]][empty_pos[1]] = '.'
-    return None
 
+    for value in find_possible_values(grid, pos):
+        row, col = pos
+        grid[row][col] = value
+
+        if solve(grid):
+            return grid
+
+        grid[row][col] = "."
+
+    return None
 
 def check_solution(solution: List[List[str]]) -> bool:
     """ Если решение solution верно, то вернуть True, в противном случае False """
-    # TODO: Add doctests with bad puzzles
-    pass
 
+    b_values = {"1", "2", "3", "4", "5", "6", "7", "8", "9"}
+
+    for i in range(len(solution)):
+        for j in range(len(solution[i])):
+            pos = (i, j)
+            crossing = (
+                set(get_row(solution, pos))
+                & set(get_col(solution, pos))
+                & set(get_block(solution, pos))
+            )
+        if crossing != b_values:
+            return False
+    return True
 
 def generate_sudoku(N: int) -> List[List[str]]:
     """Генерация судоку заполненного на N элементов
@@ -185,8 +193,16 @@ def generate_sudoku(N: int) -> List[List[str]]:
     >>> check_solution(solution)
     True
     """
-    pass
+    grid = [["." for i in range(9)] for i in range(9)]
+    grid = solve(grid)
 
+    count = 81
+    while count > N:
+        row, col = random.randint(0, 8), random.randint(0, 8)
+        if grid[row][col] != ".":
+            grid[row][col] = "."
+            count -= 1
+    return grid
 
 if __name__ == "__main__":
     for fname in ["puzzle1.txt", "puzzle2.txt", "puzzle3.txt"]:
