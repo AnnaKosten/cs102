@@ -16,8 +16,7 @@ def display(grid: List[List[str]]) -> None:
     for row in range(9):
         print(
             "".join(
-                grid[row][col].center(width) + ("|" if str(col) in "25" else "")
-                for col in range(9)
+                grid[row][col].center(width) + ("|" if str(col) in "25" else "") for col in range(9)
             )
         )
         if str(row) in "25":
@@ -75,14 +74,10 @@ def get_block(grid: List[List[str]], pos: Tuple[int, int]) -> List[str]:
     >>> get_block(grid, (8, 8))
     ['2', '8', '.', '.', '.', '5', '.', '7', '9']
     """
-    row = pos[0] % 3
-    col = pos[1] % 3
-    block = []
-    spos = pos[0] - row, pos[1] - col
-    for i in range(3):
-        for j in range(3):
-            block.append(grid[spos[0] + i][spos[1] + j])
-    return block
+    row = pos[0] - pos[0] % 3
+    col = pos[1] - pos[1] % 3
+    block = [[grid[row + i][col + j] for j in range(3)] for i in range(3)]
+    return [j for i in block for j in i]
 
 
 def find_empty_positions(grid: List[List[str]]) -> Optional[Tuple[int, int]]:
@@ -114,16 +109,15 @@ def find_possible_values(grid: List[List[str]], pos: Tuple[int, int]) -> Set[str
     >>> values == {'2', '5', '9'}
     True
     """
-    b_values = {"1", "2", "3", "4", "5", "6", "7", "8", "9"}
-    values = set()
-    for i in b_values:
-        if (
-            i not in get_row(grid, pos)
-            and i not in get_block(grid, pos)
-            and i not in get_col(grid, pos)
-        ):
-            values.add(i)
-    return values
+    return set(
+        [
+            str(i)
+            for i in range(1, 10)
+            if not str(i) in get_col(grid, pos)
+            and not str(i) in get_row(grid, pos)
+            and not str(i) in get_block(grid, pos)
+        ]
+    )
 
 
 def solve(grid: List[List[str]]) -> Optional[List[List[str]]]:
