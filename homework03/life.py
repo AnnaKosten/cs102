@@ -31,8 +31,11 @@ class GameOfLife:
         self.generations = 1
 
     def create_grid(self, randomize: bool = False) -> Grid:
-        return[[random.randint(0, 1) if randomize else 0 for _ in range(self.cols)] for _ in range(self.rows)]
-    
+        return [
+            [random.randint(0, 1) if randomize else 0 for _ in range(self.cols)]
+            for _ in range(self.rows)
+        ]
+
     def get_neighbours(self, cell: Cell) -> Cells:
 
         neighbours = []
@@ -41,7 +44,7 @@ class GameOfLife:
         for x, y in product(dif, dif):
             if (x, y) == (0, 0):
                 continue
-            
+
             row = cell[0] + y
             col = cell[1] + x
 
@@ -58,7 +61,9 @@ class GameOfLife:
             for j in range(len(new_grid[i])):
                 alive_neighbours = sum(self.get_neighbours((i, j)))
 
-                if alive_neighbours == 3 or (self.curr_generation[i][j] == 1 and alive_neighbours == 2):
+                if alive_neighbours == 3 or (
+                    self.curr_generation[i][j] == 1 and alive_neighbours == 2
+                ):
                     new_grid[i][j] = 1
                 else:
                     new_grid[i][j] = 0
@@ -94,7 +99,7 @@ class GameOfLife:
         """
         with open(filename, "r") as f:
             curr_generation = json.load(f)
-        
+
         size = len(curr_generation), len(curr_generation[0])
         game = GameOfLife(size=size, randomize=False)
         game.curr_generation = curr_generation

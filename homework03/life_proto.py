@@ -82,7 +82,10 @@ class GameOfLife:
         out : Grid
             Матрица клеток размером `cell_height` х `cell_width`.
         """
-        return[[random.randint(0, 1) if randomize else 0 for _ in range(self.cell_width)] for _ in range(self.cell_height)]
+        return [
+            [random.randint(0, 1) if randomize else 0 for _ in range(self.cell_width)]
+            for _ in range(self.cell_height)
+        ]
 
     def draw_grid(self) -> None:
         """
@@ -94,7 +97,9 @@ class GameOfLife:
                     cell_colour = pygame.Color("white")
                 else:
                     cell_colour = pygame.Color("green")
-                rect = pygame.Rect(j * self.cell_size, i * self.cell_size, self.cell_size, self.cell_size)
+                rect = pygame.Rect(
+                    j * self.cell_size, i * self.cell_size, self.cell_size, self.cell_size
+                )
                 pygame.draw.rect(self.screen, cell_colour, rect)
 
     def get_neighbours(self, cell: Cell) -> Cells:
@@ -121,7 +126,7 @@ class GameOfLife:
         for x, y in product(dif, dif):
             if (x, y) == (0, 0):
                 continue
-            
+
             row = cell[0] + y
             col = cell[1] + x
 
@@ -151,6 +156,7 @@ class GameOfLife:
                     new_grid[i][j] = 0
 
         return new_grid
+
 
 if __name__ == "__main__":
     game = GameOfLife(320, 240, 20)

@@ -28,8 +28,11 @@ class GUI(UI):
                     cell_colour = pygame.Color("white")
                 else:
                     cell_colour = pygame.Color("green")
-                rect = pygame.Rect(j * self.cell_size, i * self.cell_size, self.cell_size, self.cell_size)
+                rect = pygame.Rect(
+                    j * self.cell_size, i * self.cell_size, self.cell_size, self.cell_size
+                )
                 pygame.draw.rect(self.screen, cell_colour, rect)
+
     def run(self) -> None:
         pygame.init()
         clock = pygame.time.Clock()
