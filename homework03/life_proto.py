@@ -2,8 +2,8 @@ import random
 import typing as tp
 from copy import deepcopy
 from itertools import product
-import pygame
-from pygame.locals import *
+import pygame  # type: ignore
+from pygame.locals import *  # type: ignore
 
 Cell = tp.Tuple[int, int]
 Cells = tp.List[int]
@@ -50,7 +50,7 @@ class GameOfLife:
         running = True
         while running:
             for event in pygame.event.get():
-                if event.type == QUIT:
+                if event.type == pygame.QUIT:
                     running = False
 
             # Отрисовка списка клеток

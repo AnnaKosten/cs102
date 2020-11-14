@@ -2,7 +2,7 @@ import pathlib
 import random
 import typing as tp
 from copy import deepcopy
-import pygame
+import pygame  # type: ignore
 
 import json
 from itertools import product
@@ -17,7 +17,7 @@ class GameOfLife:
         self,
         size: tp.Tuple[int, int],
         randomize: bool = True,
-        max_generations: tp.Optional[float] = float("inf"),
+        max_generations: float = float("inf"),
     ) -> None:
         # Размер клеточного поля
         self.rows, self.cols = size
@@ -75,7 +75,7 @@ class GameOfLife:
         Выполнить один шаг игры.
         """
         self.prev_generation = deepcopy(self.curr_generation)
-        self.curr_generation = self.get_next_generation
+        self.curr_generation = self.get_next_generation  # type: ignore
         self.generations += 1
 
     @property
@@ -103,6 +103,8 @@ class GameOfLife:
         size = len(curr_generation), len(curr_generation[0])
         game = GameOfLife(size=size, randomize=False)
         game.curr_generation = curr_generation
+
+        return game
 
     def save(self, filename: pathlib.Path) -> None:
         """
