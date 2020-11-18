@@ -75,7 +75,7 @@ class GameOfLife:
         Выполнить один шаг игры.
         """
         self.prev_generation = deepcopy(self.curr_generation)
-        self.curr_generation = self.get_next_generation  # type: ignore
+        self.curr_generation = self.get_next_generation()  # type: ignore
         self.generations += 1
 
     @property
@@ -90,7 +90,7 @@ class GameOfLife:
         """
         Изменилось ли состояние клеток с предыдущего шага.
         """
-        return self.prev_generation == self.curr_generation
+        return self.curr_generation != self.prev_generation
 
     @staticmethod
     def from_file(filename: pathlib.Path) -> "GameOfLife":
