@@ -1,3 +1,8 @@
+# pylint: disable=no-member
+# pylint: disable=missing-class-docstring
+# pylint: disable=missing-module-docstring
+# pylint: disable=missing-function-docstring
+
 import pathlib
 import random
 import typing as tp
