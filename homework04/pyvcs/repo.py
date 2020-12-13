@@ -4,6 +4,7 @@ import typing as tp
 
 
 def repo_find(workdir: tp.Union[str, pathlib.Path] = ".") -> pathlib.Path:
+
     path = pathlib.Path(workdir)
     del workdir
     gitdir_name = os.getenv("GIT_DIR")
@@ -21,7 +22,8 @@ def repo_find(workdir: tp.Union[str, pathlib.Path] = ".") -> pathlib.Path:
 
 
 def repo_create(workdir: tp.Union[str, pathlib.Path]) -> pathlib.Path:
-   path = pathlib.Path(workdir)
+
+    path = pathlib.Path(workdir)
     del workdir
     if not path.is_dir():
         raise Exception(f"{path} is not a directory")
