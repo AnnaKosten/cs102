@@ -55,9 +55,7 @@ class GitIndexEntry(tp.NamedTuple):
             data = data[:-1]
             last_b = data[-1]
         name = ""
-        while chr(last_b) in (
-            string.ascii_letters + string.punctuation + string.digits
-        ):
+        while chr(last_b) in (string.ascii_letters + string.punctuation + string.digits):
             name += chr(last_b)
             data = data[:-1]
             last_b = data[-1]
@@ -141,9 +139,7 @@ def ls_files(gitdir: pathlib.Path, details: bool = False) -> None:
             print(f"{entry.name}")
 
 
-def update_index(
-    gitdir: pathlib.Path, paths: tp.List[pathlib.Path], write: bool = True
-) -> None:
+def update_index(gitdir: pathlib.Path, paths: tp.List[pathlib.Path], write: bool = True) -> None:
     idx_entries: tp.List[GitIndexEntry] = []
     absolute_paths = [i.absolute() for i in paths]
     absolute_paths.sort()
