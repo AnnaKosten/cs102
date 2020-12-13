@@ -113,7 +113,9 @@ def cat_file(obj_name: str, pretty: bool = True) -> None:
         print(content.decode())
 
 
-def find_tree_files(tree_sha: str, gitdir: pathlib.Path) -> tp.List[tp.Tuple[str, str]]:
+def find_tree_files(
+    tree_sha: str, gitdir: pathlib.Path, accumulator: str = ""
+) -> tp.List[tp.Tuple[str, str]]:
 
     tree_files = []
     _, tree = read_object(tree_sha, gitdir)
