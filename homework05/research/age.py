@@ -19,9 +19,9 @@ def age_predict(user_id: int) -> tp.Optional[float]:
     for friend in friends.items:
         if (
             "bdate" in friend and str(friend["bdate"]).count(".") == 2  # type: ignore
-        ):  # last things checks the date for having a year
+        ):
             birth_date = dt.datetime.strptime(friend["bdate"], "%d.%m.%Y")  # type: ignore
-            age = relativedelta(dt.datetime.now(), birth_date).years  # very convenient
+            age = relativedelta(dt.datetime.now(), birth_date).years  # type: ignore
             ages.append(age)
     if not ages:
         return None
