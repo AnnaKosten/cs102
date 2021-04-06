@@ -17,15 +17,12 @@ def encrypt_caesar(plaintext: str, shift: int = 3) -> str:
     ciphertext = ""
 
     for letter in plaintext:
-        if ord(letter) in range(65, 88) or ord(letter) in range(97, 120):
-            ch = ord(letter) + shift
-            chletter = chr(ch)
-        elif ord(letter) in range(88, 91) or ord(letter) in range(120, 123):
-            ch = ord(letter) - 26 + shift
-            chletter = chr(ch)
+        if ord("A") <= ord(letter) <= ord("Z"):
+            ciphertext += chr((ord(letter) - ord("A") + shift) % 26 + ord("A"))
+        elif ord("a") <= ord(letter) <= ord("z"):
+            ciphertext += chr((ord(letter) - ord("a") + shift) % 26 + ord("a"))
         else:
-            chletter = letter
-        ciphertext += chletter
+            ciphertext += letter
     return ciphertext
 
 
@@ -45,15 +42,12 @@ def decrypt_caesar(ciphertext: str, shift: int = 3) -> str:
     plaintext = ""
 
     for letter in ciphertext:
-        if ord(letter) in range(68, 91) or ord(letter) in range(100, 123):
-            pl = ord(letter) - shift
-            pletter = chr(pl)
-        elif ord(letter) in range(65, 68) or ord(letter) in range(97, 100):
-            pl = ord(letter) + 26 - shift
-            pletter = chr(pl)
+        if ord("A") <= ord(letter) <= ord("Z"):
+            plaintext += chr((ord(letter) - ord("A") - shift) % 26 + ord("A"))
+        elif ord("a") <= ord(letter) <= ord("z"):
+            plaintext += chr((ord(letter) - ord("a") - shift) % 26 + ord("a"))
         else:
-            pletter = letter
-        plaintext += pletter
+            plaintext += letter
     return plaintext
 
 
