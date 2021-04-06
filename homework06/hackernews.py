@@ -2,22 +2,23 @@ import pathlib
 import pickle
 import typing as tp
 
+from bottle import redirect, request, route, run, template
+
 import stemmer
 from bayes import NaiveBayesClassifier
-from bottle import redirect, request, route, run, template
 from db import News, session
 from scraputils import get_news
 
 
-@route("/news")
-def news_list():
+@route("/news")  # type: ignore
+def news_list() -> tp.Any:
     s = session()
     rows = s.query(News).filter(News.label == None).all()
     return template("news_template", rows=rows)
 
 
-@route("/add_label/")
-def add_label():
+@route("/add_label/")  # type: ignore
+def add_label() -> None:
     params = request.query
     s = session()
     entry = s.query(News).filter(News.id == params["id"]).first()
@@ -26,8 +27,8 @@ def add_label():
     redirect("/news")
 
 
-@route("/update")
-def update_news():
+@route("/update")  # type: ignore
+def update_news() -> None:
     new_arrivals = get_news("https://news.ycombinator.com/newest")
     s = session()
     marker = s.query(News).first()
@@ -49,8 +50,8 @@ def update_news():
     redirect("/news")
 
 
-@route("/classify")
-def classify_news():
+@route("/classify")  # type: ignore
+def classify_news() -> tp.Any:
     s = session()
     unclassified: tp.List[tp.Tuple[int, str]] = [
         (i.id, stemmer.clear(i.title)) for i in s.query(News).filter(News.label == None).all()

@@ -1,8 +1,10 @@
+import typing as tp
+
 import requests
 from bs4 import BeautifulSoup
 
 
-def extract_news(parser):
+def extract_news(parser: BeautifulSoup) -> tp.List[tp.Dict[str, tp.Any]]:
     """ Extract news from a given web page """
     news_list = []
     news_table = parser.find_all("tr", {"class": "athing"})
@@ -29,12 +31,12 @@ def extract_news(parser):
     return news_list
 
 
-def extract_next_page(parser):
+def extract_next_page(parser: BeautifulSoup) -> tp.Any:
     """ Extract next page URL """
     return parser.table.find_all("table")[1].find_all("a")[-1]["href"]
 
 
-def get_news(url, n_pages=1):
+def get_news(url: str, n_pages: int = 1) -> tp.List[tp.Dict[str, tp.Any]]:
     """ Collect news from a given web page """
     news = []
     while n_pages:

@@ -1,45 +1,51 @@
-from collections import defaultdict
-from copy import deepcopy
 import itertools
 import math
 import operator
-from collections import Counter
+import typing as tp
+from collections import Counter, defaultdict
+from copy import deepcopy
 
 
 class NaiveBayesClassifier:
-    def __init__(self, alpha):
+    def __init__(self, alpha: float) -> None:
         if not (alpha <= 1.0 and alpha > 0.0):
             raise ValueError("Smoothing parameter must be between 0.0 and 1.0")
-        self.priors = []
-        self.alpha = alpha
-        self.doc_count = 0
-        self.unique_words = []
-        self.words_per_class = []
-        self.class_lengths = []
-        self.word_probs = []
+        self.priors: tp.Counter[str] = Counter()
+        self.alpha: float = alpha
+        self.doc_count: int = 0
+        self.unique_words: tp.List[str] = []
+        self.words_per_class: tp.DefaultDict[str, tp.DefaultDict[str, float]] = defaultdict(
+            defaultdict
+        )
+        self.class_lengths: tp.DefaultDict[str, float] = defaultdict(float)
+        self.word_probs: tp.DefaultDict[str, tp.DefaultDict[str, float]] = defaultdict(defaultdict)
 
-    def fit(self, X, y):
+    def fit(self, X: tp.List[str], y: tp.List[str]) -> None:
         """ Fit Naive Bayes classifier according to X, y. """
         if not X or not y or not (len(X) == len(y)):
             raise ValueError("The training set is either unmarked or empty.")
         self.doc_count = len(X)
         self.priors = Counter(y)
         for e in self.priors:
-            self.priors[e] /= len(y)
-        self.unique_words = [i.split(" ") for i in X]
-        self.unique_words = list(itertools.chain.from_iterable(self.unique_words))
+            self.priors[e] /= len(y)  # type: ignore
+        unique_words_prepare = [i.split(" ") for i in X]
+        self.unique_words = list(itertools.chain.from_iterable(unique_words_prepare))
         self.unique_words = sorted(list(set(self.unique_words)))
         self.words_per_class = defaultdict(defaultdict)
-        self.class_lengths = defaultdict(int)
+        self.class_lengths = defaultdict(float)
         for i, string in enumerate(X):
             words = string.split(" ")
             c = y[i]
             self.class_lengths[c] += len(words)
             for word in words:
                 if not word in self.words_per_class.keys():
-                    self.words_per_class[word] = {
-                        key: value for (key, value) in zip(list(set(y)), [0 for _ in list(set(y))])
-                    }
+                    self.words_per_class[word] = defaultdict(
+                        float,
+                        {
+                            key: value
+                            for (key, value) in zip(list(set(y)), [0 for _ in list(set(y))])
+                        },
+                    )
                 self.words_per_class[word][c] += 1
         self.word_probs = deepcopy(self.words_per_class)
         for word, value in self.word_probs.items():
@@ -47,9 +53,8 @@ class NaiveBayesClassifier:
                 self.word_probs[word][c] = (self.word_probs[word][c] + self.alpha) / (
                     self.class_lengths[c] + self.alpha * len(self.unique_words)
                 )
-        return
 
-    def predict(self, X):
+    def predict(self, X: tp.List[str]) -> tp.List[str]:
         """ Perform classification on an array of test vectors X. """
         if (
             not self.priors
@@ -63,19 +68,19 @@ class NaiveBayesClassifier:
         labels = []
         for document in X:
             words = document.split(" ")
-            probabilities = defaultdict(int)
+            probabilities: tp.DefaultDict[str, float] = defaultdict(float)
             for c in self.class_lengths.keys():
-                word_probs_sum = []
+                word_probs = []
                 for word in words:
                     if word in self.unique_words:
-                        word_probs_sum.append(math.log(self.word_probs[word][c]))
-                word_probs_sum = sum(word_probs_sum)
+                        word_probs.append(math.log(self.word_probs[word][c]))
+                word_probs_sum = sum(word_probs)
                 probabilities[c] = math.log(self.priors[c]) + word_probs_sum
             predicted_label = max(probabilities.items(), key=operator.itemgetter(1))[0]
             labels.append(predicted_label)
         return labels
 
-    def score(self, X_test, y_test):
+    def score(self, X_test: tp.List[str], y_test: tp.List[str]) -> float:
         """ Returns the mean accuracy on the given test data and labels. """
         predicted = self.predict(X_test)
         class_accuracies = defaultdict(float)
