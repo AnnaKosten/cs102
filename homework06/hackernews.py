@@ -2,10 +2,9 @@ import pathlib
 import pickle
 import typing as tp
 
-from bottle import redirect, request, route, run, template
-
 import stemmer
 from bayes import NaiveBayesClassifier
+from bottle import redirect, request, route, run, template
 from db import News, session
 from scraputils import get_news
 
