@@ -1,6 +1,8 @@
 beautifulsoup4==4.9.3
 bottle==0.12.19
+boddle==0.2.9
 bs4==0.0.1
+coverage==5.4
 httpretty==1.0.2
 mypy==0.800
 mypy-extensions==0.4.3
